@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://light.framework.com" targetNamespace="http://light.framework.com"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="light">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="setting" />
+				<xs:element ref="listeners" minOccurs="0" />
+				<xs:element ref="keywords" />
+				<xs:element ref="report" minOccurs="0" />
+				<xs:element ref="works" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="setting">
+		<xs:complexType>
+			<xs:group ref="propertySet" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="listeners">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="listener" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="class" type="text_not_null" use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="keywords">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="keyword" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="class" type="text_not_null" use="required" />
+						<xs:attribute name="name" type="text_not_null" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="report">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="writer" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:group ref="propertySet" />
+						<xs:attribute name="class" type="text_not_null" use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="works">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="dataSource" minOccurs="0" />
+				<xs:element ref="global-recovery" minOccurs="0" />
+				<xs:element ref="work" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="dataSource">
+		<xs:complexType>
+			<xs:group ref="propertySet" />
+			<xs:attribute name="type" type="text_not_null" use="required" />
+			<xs:attribute name="src" type="text_not_null" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="global-recovery">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="steps">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="step" type="step_base" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="enable" type="xs:boolean" default="true" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="work">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="before" type="step_set" minOccurs="0" />
+				<xs:element name="steps" type="step_set" />
+				<xs:element name="after" type="step_set" minOccurs="0" />
+				<xs:element ref="recovery" minOccurs="0" />
+			</xs:sequence>
+			<xs:attributeGroup ref="attr_work" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="recovery">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="step" type="step_base" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="enable" type="xs:boolean" default="true" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="step_set">
+		<xs:sequence>
+			<xs:element name="step" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="step_base">
+							<xs:group ref="parameterSet" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="data-tag" type="text_not_null" />
+		<xs:attribute name="enable" type="xs:boolean" default="true" />
+		<xs:attribute name="retry" type="xs:nonNegativeInteger" default="0" />
+		<xs:attribute name="data-selector" type="text_not_null" />
+	</xs:complexType>
+
+	<!-- ========================================================================= -->
+	<xs:element name="property">
+		<xs:complexType>
+			<xs:attribute name="name" type="text_not_null" />
+			<xs:attribute name="value" type="text_not_null" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:group name="propertySet">
+		<xs:choice>
+			<xs:element ref="property" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+	</xs:group>
+
+	<xs:element name="parameter">
+		<xs:complexType>
+			<xs:attribute name="name" type="text_not_null" use="required" />
+			<xs:attribute name="column" type="text_not_null" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:group name="parameterSet">
+		<xs:choice>
+			<xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+	</xs:group>
+
+	<xs:complexType name="step_base">
+		<xs:attribute name="keyword" type="text_not_null" use="required" />
+		<xs:attribute name="call" type="text_not_null" use="required" />
+		<xs:attribute name="enable" type="xs:boolean" default="true" />
+		<xs:attribute name="retry" type="xs:nonNegativeInteger"
+			default="0" />
+	</xs:complexType>
+
+	<!-- ========================================================================= -->
+	<xs:simpleType name="text_not_null">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:whiteSpace value="replace" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- ========================================================================= -->
+	<xs:attributeGroup name="attr_work">
+		<xs:attribute name="name" type="text_not_null" use="required" />
+		<xs:attribute name="enable" type="xs:boolean" default="true" />
+		<xs:attribute name="data-selector" type="text_not_null" />
+	</xs:attributeGroup>
+</xs:schema>

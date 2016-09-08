@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<light xmlns="http://light.framework.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://light.framework.com light.xsd">
+
+	<setting>
+		<property name="type" value="work" />
+		<property name="platform" value="android" />
+	</setting>
+	
+	<listeners>
+		<listener class="a.b.c" />
+		<listener class="a.b.c" />
+	</listeners>
+
+	<keywords>
+		<keyword class="com.test.Login" name="k_login" />
+		<keyword class="com.test.Login" name="k_login" />
+	</keywords>
+
+	<report>
+		<writer class="com.test.writer">
+			<property name="custom" value="custom" />
+		</writer>
+		<writer class="com.test.writer" />
+	</report>
+
+	<works>
+		<dataSource type="excel" src="data.xls">
+			<property name="custom" value="custom" />
+		</dataSource>
+
+		<global-recovery enable="true">
+			<steps>
+				<step keyword="k_reset" call="doReset" />
+			</steps>
+		</global-recovery>
+
+		<work name="w_login" enable="true" data-selector="a.b.c">
+			<before data-tag="a" enable="true" retry="0" data-selector="a.b.c">
+				<step keyword="a" call="a" />
+				<step keyword="a" call="a" />
+			</before>
+			<steps data-tag="a" enable="true" retry="0" data-selector="a.b.c">
+				<step keyword="k_enter" call="doEnter" enable="true" retry="0" >
+					<parameter name="a" column="col_a" />
+					<parameter name="a" column="col_a" />
+				</step>
+				<step keyword="k_enter" call="doEnter" enable="true" retry="0" >
+					<parameter name="a" column="col_a" />
+				</step>
+			</steps>
+			<after data-tag="a" enable="true" retry="0" data-selector="a.b.c">
+				<step keyword="a" call="a" />
+				<step keyword="a" call="a" />
+			</after>
+			<recovery enable="true">
+				<step keyword="a" call="a" />
+				<step keyword="a" call="a" />
+			</recovery>
+		</work>
+		<work name="a">
+			<steps>
+				<step keyword="a" call="a" />
+			</steps>
+		</work>
+	</works>
+</light>
